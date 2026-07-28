@@ -1,6 +1,6 @@
 # Direct production requirements. Compile with:
 # python -m piptools compile --generate-hashes -o requirements.lock requirements.in
-streamlit==1.59.1
+streamlit==1.60.0
 pandas==2.3.3
 numpy==2.3.5
 plotly==6.8.0
