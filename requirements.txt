@@ -1,0 +1,8 @@
+# Direct production dependencies are pinned as one tested compatibility set.
+# Update them together, run the full Python matrix, and review pip-audit output.
+streamlit==1.59.1
+pandas==2.3.3
+numpy==2.3.5
+plotly==6.8.0
+alpaca-py==0.43.5
+tzdata==2026.2

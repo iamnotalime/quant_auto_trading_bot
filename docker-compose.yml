@@ -1,0 +1,153 @@
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile.bot
+    env_file: ${BOT_ENV_FILE:-.env}
+    environment:
+      DATABASE_PATH: /app/state/auto_trader.sqlite3
+      LOG_PATH: /app/state/auto_trader.log
+      PROCESS_LOCK_PATH: /app/state/auto_trader.lock
+      OPERATION_LOCK_PATH: /app/state/auto_trader.operation.lock
+      DAEMON_HEALTH_PATH: /app/state/daemon_health.json
+      SIMULATED_STATE_PATH: /app/state/simulated_broker.json
+      KILL_SWITCH_PATH: /app/control/KILL_SWITCH
+      KILL_SWITCH_ACK_PATH: /app/control/KILL_SWITCH.ack.json
+      # The keyed order-idempotency journal is bot-only. The dashboard may publish a
+      # kill marker, but cannot replace/corrupt ambiguous broker intent records.
+      EMERGENCY_JOURNAL_PATH: /app/emergency/EMERGENCY_JOURNAL.json
+      ALPACA_ACCOUNT_ID: ${ALPACA_ACCOUNT_ID:-}
+      PLAN_AUTHENTICATION_KEY: ${PLAN_AUTHENTICATION_KEY:-}
+      EMERGENCY_AUTHENTICATION_KEY: ${EMERGENCY_AUTHENTICATION_KEY:-}
+      DEPLOYMENT_APPROVAL_PATH: ${DEPLOYMENT_APPROVAL_PATH:-}
+      DEPLOYMENT_GOVERNANCE_PUBLIC_KEYS_PATH: ${DEPLOYMENT_GOVERNANCE_PUBLIC_KEYS_PATH:-}
+      DEPLOYMENT_GOVERNANCE_PUBLIC_KEYS_SHA256: ${DEPLOYMENT_GOVERNANCE_PUBLIC_KEYS_SHA256:-}
+      COVARIANCE_EVIDENCE_PATH: ${COVARIANCE_EVIDENCE_PATH:-}
+      COVARIANCE_EXECUTION_PRICES_PATH: ${COVARIANCE_EXECUTION_PRICES_PATH:-}
+      COVARIANCE_CORPORATE_ACTIONS_PATH: ${COVARIANCE_CORPORATE_ACTIONS_PATH:-}
+      COVARIANCE_GOVERNANCE_PUBLIC_KEYS_PATH: ${COVARIANCE_GOVERNANCE_PUBLIC_KEYS_PATH:-}
+      COVARIANCE_GOVERNANCE_PUBLIC_KEYS_SHA256: ${COVARIANCE_GOVERNANCE_PUBLIC_KEYS_SHA256:-}
+      COVARIANCE_PROVIDER_ID: ${COVARIANCE_PROVIDER_ID:-}
+      COVARIANCE_VENUE_ID: ${COVARIANCE_VENUE_ID:-}
+      BORROW_EVIDENCE_PATH: ${BORROW_EVIDENCE_PATH:-}
+      BORROW_TERMS_PATH: ${BORROW_TERMS_PATH:-}
+      BORROW_GOVERNANCE_PUBLIC_KEYS_PATH: ${BORROW_GOVERNANCE_PUBLIC_KEYS_PATH:-}
+      BORROW_GOVERNANCE_PUBLIC_KEYS_SHA256: ${BORROW_GOVERNANCE_PUBLIC_KEYS_SHA256:-}
+      BORROW_PROVIDER_ID: ${BORROW_PROVIDER_ID:-}
+      BORROW_VENUE_ID: ${BORROW_VENUE_ID:-}
+      BORROW_MAX_TERM_AGE_SECONDS: ${BORROW_MAX_TERM_AGE_SECONDS:-300}
+      MAX_LIVE_ANNUAL_BORROW_RATE: ${MAX_LIVE_ANNUAL_BORROW_RATE:-0.02}
+    init: true
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    restart: unless-stopped
+    cpus: "2.0"
+    mem_limit: 2g
+    pids_limit: 256
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"
+    stop_grace_period: 900s
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    volumes:
+      - quant_runtime:/app/state
+      - quant_control:/app/control
+      - quant_emergency:/app/emergency
+      - ./sample_prices.csv:/app/sample_prices.csv:ro
+      - type: bind
+        source: ${DEPLOYMENT_GOVERNANCE_HOST_DIR:-./runtime/governance}
+        target: /app/deployment
+        read_only: true
+        bind:
+          create_host_path: false
+
+  operations-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.dashboard
+    environment:
+      DATABASE_PATH: /app/state/auto_trader.sqlite3
+      KILL_SWITCH_PATH: /app/control/KILL_SWITCH
+      KILL_SWITCH_ACK_PATH: /app/control/KILL_SWITCH.ack.json
+      BROKER: ${BROKER:-unknown}
+      ALPACA_PAPER: ${ALPACA_PAPER:-true}
+      EXECUTION_ENABLED: ${EXECUTION_ENABLED:-false}
+      DASHBOARD_CONTROL_TOKEN: ${DASHBOARD_CONTROL_TOKEN:-}
+    init: true
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    restart: unless-stopped
+    cpus: "1.0"
+    mem_limit: 1g
+    pids_limit: 128
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    stop_grace_period: 30s
+    depends_on:
+      - bot
+    ports:
+      - "127.0.0.1:${OPERATIONS_DASHBOARD_PORT:-8502}:8502"
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    volumes:
+      # The dashboard has no writable path to authoritative state or the emergency
+      # order-idempotency journal. Its only writable capability is marker/ack control.
+      - quant_runtime:/app/state:ro
+      - quant_control:/app/control
+
+  research-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    profiles: ["research"]
+    init: true
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    environment:
+      # The trust registry is deliberately outside the image. The digest must be
+      # supplied independently by protected deployment configuration.
+      RESEARCH_GOVERNANCE_PUBLIC_KEYS_PATH: /app/governance/trusted_public_keys.json
+      RESEARCH_GOVERNANCE_PUBLIC_KEYS_SHA256: ${RESEARCH_GOVERNANCE_PUBLIC_KEYS_SHA256:-}
+    restart: unless-stopped
+    cpus: "4.0"
+    mem_limit: 4g
+    pids_limit: 256
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "3"
+    stop_grace_period: 30s
+    ports:
+      - "127.0.0.1:${RESEARCH_DASHBOARD_PORT:-8501}:8501"
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    volumes:
+      - research_runtime:/app/runtime
+      - type: bind
+        source: ${RESEARCH_GOVERNANCE_PUBLIC_KEYS_HOST_DIR:-./runtime/governance}
+        target: /app/governance
+        read_only: true
+        bind:
+          create_host_path: false
+
+volumes:
+  quant_runtime:
+  quant_control:
+  quant_emergency:
+  research_runtime:

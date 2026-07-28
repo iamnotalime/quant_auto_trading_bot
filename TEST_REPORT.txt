@@ -1,0 +1,293 @@
+QUANT AUTO TRADING BOT - VERIFICATION REPORT
+Generated and verified: 2026-07-20 (Asia/Jakarta)
+
+VERDICT SCOPE
+  - Code-verifiable research, execution, risk, governance, and deployment controls
+    passed the automated verification described below.
+  - This is not evidence of a proprietary edge, future profitability, a 60% live CAGR,
+    or a 15% live drawdown ceiling.
+  - "Medallion-level" is not a self-awarded software label. Independent point-in-time
+    data, governance, broker-reconciled paper/live results, realized cost/capacity
+    evidence, and operational history remain external requirements.
+
+AUTHORITATIVE AUTOMATED SUITE
+Command family:
+  python -m pytest <complete, non-overlapping module group>
+
+Result on the final settled tree:
+  432 passed across non-overlapping isolated module groups; no test was omitted.
+  The two slowest research modules were divided by exact test node after combined runs
+  exceeded the host process ceiling. Every collected node subsequently completed cleanly.
+
+Warning hygiene:
+  pytest-asyncio's fixture loop scope is explicitly pinned to `function`; final
+  collection and a representative post-configuration run emit no warning.
+
+Collection by test module:
+  - Alpaca cash activity: 8
+  - attribution: 4
+  - automation/execution: 116
+  - capacity/costs: 26
+  - covariance parity: 8
+  - data integrity: 9
+  - deployment approval/contracts: 27
+  - economic inputs: 5
+  - research engine: 25
+  - experiment certification: 11
+  - governance: 14
+  - operational safety: 80
+  - path bootstrap/profit parity: 3
+  - reporting/UI: 1
+  - robustness/breadth: 11
+  - signed borrow evidence: 33
+  - signed covariance evidence: 16
+  - state observer/authentication: 35
+
+Additional verification:
+  - settled Python collection: 432 tests
+  - settled Python compilation: passed
+  - Docker Compose research profile rendering: passed
+
+RUST HFT HOT-PATH VERIFICATION (2026-07-20)
+Commands:
+  cargo +1.97.0-x86_64-pc-windows-gnu fmt --all -- --check
+  cargo +1.97.0-x86_64-pc-windows-gnu check --locked --all-targets --all-features
+  cargo +1.97.0-x86_64-pc-windows-gnu clippy --locked --all-targets --all-features -- -D warnings
+  cargo +1.97.0-x86_64-pc-windows-gnu build --release --locked --lib --all-features
+  cargo +1.97.0-x86_64-pc-windows-gnu test --locked --lib --tests --features allocation-audit
+
+Results:
+  - final settled Rust test count: 312 passed under an isolated exact Rust 1.97 Windows GNU
+    toolchain. The suite covers book/index, exact and
+    conservative queue models, authenticated control, execution engine, order lifecycle,
+    owned-MBO correlation, reactor, deterministic engine/reactor replay, scheduler commits,
+    native packet/native egress verification, authenticated audit framing and structural
+    prefix anchors, non-authorizing recovery inspection, drop-copy reconciliation,
+    authoritative-reference-data contracts, risk/adverse controls, strategy, and venue contracts
+  - live control accepts only opaque decisions produced by the authenticated gate;
+    journal-decoded replay provenance cannot arm a live engine/reactor/coordinator path
+  - accepted arm/heartbeat commands carry an exact replayable lease deadline; expiry at
+    the timer or first later market event disarms, latches first fault, and cancels first
+  - live construction, recovery, and every input bind the exact venue, adapter session,
+    market-data, order-entry, and optional drop-copy routes, protocols, channels, and epochs
+  - fixed-capacity independent drop-copy reconciliation blocks new risk while either
+    channel is ahead; every pending report has its own nonzero replayable deadline, exact
+    deadline equality survives, and the first later timer or relevant event expires it;
+    cross-variant/economic/duplicate/sequence/session faults latch DropCopyMismatch and
+    publish cancel-only output without double-applying lifecycle/risk
+  - immutable instrument definitions bind authority/product/artifact identity, exact scales,
+    tick/lot increments, price/quantity bands, trading state, STP, cancel-on-disconnect,
+    settlement currency, tick value, and contract multiplier; expiry timers cancel first
+  - authenticated-container v2 MAC framing binds configuration/software, exact venue and
+    MD/OE/drop-copy sessions, reference-data identity, ordered record tags, terminal count,
+    rotation predecessor, and a caller-supplied independent latest anchor before payload use
+  - canonical QHLR v1 framing round-trips the complete live checkpoint in a fixed 220-byte
+    record and rejects noncanonical options/domains/phases/reserved bytes, bad lengths,
+    trailing bytes, and CRC mismatch; CRC is not authentication or rollback protection
+  - the verified-container recovery scanner is deliberately non-authorizing: it accepts only
+    one final checkpoint, binds header identity and cursors, classifies runnable phases as
+    OwnedReplayRequired and terminal phases as ManualReconciliation, treats every native
+    intent as unfinished, and rejects unsupported facts and predecessor history it did not replay
+  - QHPA v1 provides only a fixed 296-byte provider-neutral structural anchor codec. Its
+    264-byte canonical message and opaque 256-bit deployment tag do not verify a MAC,
+    durability, freshness, CAS publication, replay-derived lifecycle, cursor ownership,
+    exact intent resolution, crash-prefix rotation, or recovery authorization
+  - all three native decoder gates reject holes or populated unused output tails before
+    session/feed commit, restore codec state, and scrub caller-owned output buffers
+  - normalized journal format v5 preserves control/drop-copy liveness timers and explicit
+    lifecycle-correction quarantine facts, rejecting older incompatible records rather than
+    replaying them with weakened semantics
+  - lifecycle bust/correct facts pair exactly across order entry and drop copy, immediately
+    quarantine and cancel, and never invent an inverse fill or mutate inventory/P&L
+  - transport-return claims are not trusted: exact context, proof, disposition, and timestamp
+    must verify transactionally before audit commit, rollback, feedback, or adapter commit
+  - runnable coordinator checkpoint metadata cannot be attached to a fresh same-config
+    reactor; scanner output is evidence only, and only non-runnable Ambiguous/Failed metadata
+    can currently be reconstructed for manual reconciliation
+  - execution IDs are retained without eviction; capacity exhaustion fails closed before
+    venue binding, lifecycle, inventory, risk, or adverse-state mutation
+  - open-order notional uses max(limit, authenticated mark) per order, is transactionally
+    revalued on every mark, and applies the conservative value to order/gross/net limits,
+    fills, cancels, mixed sides, reducing orders, and checked-overflow boundaries; every
+    accepted mark continuously enforces max-order notional on the revalued reservation,
+    commits the observed fact, and then fail-latches/cancels on breach
+  - fills remain accounted facts when validation subsequently fails: worse-than-limit prices
+    and invalid instrument economics return typed reconciled errors after risk/lifecycle/
+    adverse/source progress is synchronized, desired risk is cleared, and cancels are prepared;
+    unreconciled atomic risk rejection rolls back tentative trade and first-fill binding identity
+  - every caller-buffered engine event entry point preflights and clears the complete fixed
+    two-slot caller output before clock, source, control, drop-copy, lifecycle, or accounting
+    mutation; a short order-entry output therefore cannot consume a fill, trade ID, or cursor
+  - when a primary order-entry fill is rejected before reconciliation, its tentative independent
+    drop-copy observation is rolled back with the order transaction, so an exact retry is not
+    misclassified as a duplicate and the gate returns to its exact pre-event state
+  - a route failure after an authoritative order fact is applied is returned as the consumed
+    `OrderRouteAfterReconciled` error with client identity and compact secondary order/instrument
+    fault evidence; source progress is committed, desired risk is cleared, and valid cancel-first
+    output is retained without allowing defensive cleanup to replace the primary error
+  - risk freshness and adverse markout horizons use authenticated exchange time rather than
+    fresh processing time; live per-source exchange regressions match replay rejection,
+    late fills beyond the retained mark frontier fail closed, and only same-instrument mark
+    frontiers may expire that instrument's rolling losses; zero or regressing adverse/control/
+    clock observations use the last safe causal timestamp for their kill fact, while consumed
+    fatal session/reconciled order facts advance source progress before failing closed
+  - strict all-target/all-feature Clippy: passed with warnings denied
+  - optimized release library build with the pinned Rust toolchain and lockfile: passed
+  - representative initialized hot paths, native packet decode, scheduler/source-bound
+    native order encoding with transactional transport proof, explicit owned-MBO binding,
+    fixed scheduler-commit encode/decode, QHLR/QHPA codecs, and non-authorizing recovery scan:
+    zero heap allocations in audited tests
+  - 14-event live/direct/reactor/committed replay trace: identical per-event outbound
+    commands, exact owned queue state, and complete deterministic reactor state
+  - raw multi-message market-data/order-entry/snapshot frames verify exact normalized
+    events; actual reactor scheduler commits bind exact native command slots, venue
+    sequences, encoded bytes, and proof-derived Sent/ProvenUnsent feedback
+  - exact native owned-MBO correlation preserves venue-event-then-local-binding order;
+    numeric identifier equality alone cannot create ownership
+  - retained-input and source-less infrastructure safety kills replay exact cancel FIFO
+    and transmission feedback through a second actual reactor
+  - generic reactor event errors publish any valid cancel-first batch before returning the
+    original typed engine failure; feedback mismatches and engine faults discovered after a
+    transmission dequeue set mandatory internal-safety containment and leave the outstanding
+    FIFO fail-stop rather than silently treating the feedback as acknowledged
+
+Known internal release blockers on this settled tree:
+  - transmission handling has no typed Applied-versus-Unapplied fault disposition. Mandatory
+    containment prevents continued trading after a post-dequeue fault, but the unresolved FIFO
+    can remain fail-stop and cannot be safely resumed by inference
+  - reconciled composite errors preserve the fault classes and price/instrument evidence, but
+    their compact summary omits numeric risk/adverse payloads and `OrderRouteAfterReconciled`
+    does not retain the underlying route failure cause
+  - on the verified target, `ReactorFailure` is a 224-byte by-value return ABI. It still needs
+    a caller-owned fault-report redesign and target-hardware latency certification
+
+`latency_probe` is an opt-in executable behind the `latency-probe-bin` feature. It was not
+executed on the final tree and was not part of the authoritative `--lib --tests` runtime suite;
+no standalone latency metric is claimed. Even a successful host probe would be diagnostic only
+and could not satisfy the target-hardware NIC-to-wire latency gate.
+
+RESEARCH AND PROFIT-QUALITY COVERAGE
+  - raw close prices are never backfilled or forward-filled in return or signal paths
+  - nonpositive and nonfinite close/execution inputs fail validation
+  - held missing marks receive adverse treatment and invalidate certification
+  - 252 complete raw closes and 252 complete lagged execution observations are
+    required before an asset can add risk or re-enter
+  - exact signed exchange calendar and close/next-session execution timing
+  - self-financing holdings drift and post-cost target-weight consistency
+  - raw execution levels remain distinct from economic split/cash-distribution returns;
+    cash distributions do not drift as if retained inside the risky security
+  - complete point-in-time locate, borrow-rate, and recall panels gate shorts, charge
+    security/date rates, force costed buy-ins, and are doubled in the cost stress
+  - linear spread/fee, borrow, financing, and nonlinear square-root market impact
+  - strictly lagged complete 09:30-09:35 execution-window dollar volume and
+    aggregated same-day convex participation; full-session ADV is not a sealed proxy
+  - missing window volume receives adverse cost; capacity-invalid paths fail certification
+  - conservative sealed anti-knob floors for volume, participation, impact, volatility,
+    linear costs, borrow, financing, and bootstrap blocks
+  - fixed project hurdles of at least 60% CAGR and at most 15% drawdown
+  - OOS interval overlap or repeated canonical outcomes are consumed across
+    exploratory/sealed modes, date/price/universe edits, and chronological splits;
+    enriching ancillary evidence cannot restore first use
+  - signed dataframe identities hash typed canonical scalars directly with SHA-256;
+    they do not inherit the collision bound of a non-cryptographic 64-bit row hash
+  - at least 756 out-of-sample sessions, three elapsed years, and 20 eligible assets
+  - HAC/trial-aware Sharpe evidence and persistent attempt accounting
+  - Wilson lower-bound joint bootstrap gate, rolling windows, double-cost stress
+  - 25 material crossed perturbations, each requiring profit, drawdown,
+    breadth-retention, price/liquidity, and research-path validity
+  - multi-factor HAC attribution with rank and conditioning checks
+  - cost coverage and break-even-cost margins
+  - strict malformed input, duplicate-key JSON, and data/manifest schema rejection
+
+GOVERNANCE AND DEPLOYMENT COVERAGE
+  - RSA/SHA-256 preregistration with a deployment-pinned public-key registry
+  - strict signed manifest schema version 7 with exact data/calendar/timing,
+    corporate-action, PIT borrow, and execution-window-volume bindings
+  - hash-chained local experiment/attempt ledgers and stale-payload invalidation
+  - nonempty pre-policy ledgers are quarantined from sealed certification because their
+    historical records cannot be safely migrated to interval-overlap identity
+  - self-contained result bundle with normalized inputs, stress results, source,
+    dependencies, registry, manifest, anchor, ledger snapshot, and checksums
+  - separate signed deployment approval binds exact configuration, source/locks,
+    passed sealed evidence, expiry, environment, and authoritative broker account
+  - governed Alpaca covariance uses a strict RSA/SHA-256 envelope with a separately
+    pinned key registry, provider/venue identity, exact raw VWAP/action-file hashes,
+    ordered universe, session/cutoff semantics, expiry, and freshness validation
+  - live covariance parsing requires at least 253 complete positive VWAP rows and an
+    explicit same-session, by-09:30 split/cash row for every asset/date
+  - verified covariance provenance is committed both verbatim and by hash inside the
+    authenticated plan; an HMAC-authenticated monotonic state anchor rejects signed
+    snapshot rollback before plan construction
+  - target plans require both a public content hash and secret HMAC-SHA-256 tag
+  - recomputed-hash forgeries and legacy unkeyed plans fail before broker mutation
+  - the raw plan key is excluded from approvals; its SHA-256 fingerprint is bound
+  - risk/control state, plan lifecycle, and chained equity history carry keyed
+    authentication plus an external tail checkpoint in state schema v3
+  - live/read-only startup refuses implicit schema migration or missing state
+  - a corrupt/expired approval blocks routine risk but cannot block emergency reduction
+  - an independent emergency key authenticates a SQLite-independent order-intent
+    journal, keyed identity sentinel, and journal-tail checkpoint with stable IDs
+  - missing/malformed routine plan key uses an isolated, stable recovery ledger
+  - Alpaca cash-activity evidence failures halt before P&L baselines move
+  - actual Alpaca equity cannot exceed approved research capacity AUM
+
+EXECUTION AND OPERATIONAL COVERAGE
+  - fresh, finite, timestamped, spread-checked quotes and tick-valid collars
+  - final pre-submit kill, signed-approval, and actual-account identity revalidation
+  - deterministic economic-intent IDs and broker receipt identity validation
+  - terminal cancel/fill races, partial fills, and bounded residual reconciliation
+  - reduce-before-increase sign flips and per-child actual-account risk/buying-power
+    rechecks; governed live planning refuses uncertified close-proxy covariance or
+    missing, invalid, stale, identity-mismatched, or rolled-back signed PIT evidence
+  - dedicated-account orphan order/position scope and account exposure checks
+  - unauthorized orders persist a mandatory halt before cancellation is attempted
+  - database-independent kill marker and isolated dashboard control volume
+  - halt-only acknowledgement is serialized on the trading operation lock
+  - mandatory health/watchdog escalation cannot retain halt-only semantics
+  - a primary emergency submit/state-write failure cannot switch to fallback IDs
+  - malformed health sidecars recover authenticated DB failure history or fail closed
+  - process locks, database identity/schema checks, and read-only observer boundary
+  - daemon failure threshold and liveness watchdog force durable reconciliation/restart
+
+SUPPLY CHAIN AND DEPLOYMENT STATIC CHECKS
+  - production/dev locks contain 53/82 exact package stanzas and 1,019/1,122 hashes
+  - Dockerfiles install with --require-hashes from an immutable Python image digest
+  - Compose and systemd bound CPU, memory, process count, open files, and log growth
+  - CI tests Python 3.11/3.12/3.13, compiles sources, runs pip check and pip-audit,
+    validates Compose, and builds every image
+  - Streamlit research and operations AppTest paths are included in the full suite
+
+LOCAL ENVIRONMENT LIMITATIONS
+  - Docker Desktop's engine was unavailable, so local image builds were not run.
+    CI retains a blocking all-image build job.
+  - The host lacks the Visual Studio/Windows SDK linker required by the pinned MSVC Rust
+    target. The authoritative Rust verification instead used an isolated exact-version 1.97
+    Windows GNU toolchain; format, all-target/all-feature check, strict Clippy, release-library
+    link, and all library/integration tests with `allocation-audit` passed.
+  - The optimized release result covers the library only. The opt-in standalone latency-probe
+    executable was not run, and neither a host latency number nor an all-binary release result
+    is inferred from the library build or test harnesses.
+  - The Microsoft Store Python launcher intermittently lost its sandbox logon token.
+    The affected compile and 105-test safety/governance/ledger group were rerun outside
+    that launcher context and passed; no failed/aborted process was counted as evidence.
+  - No real Alpaca order, paper campaign, or live capital was used in this verification.
+
+EXTERNAL EVIDENCE STILL REQUIRED
+  - untouched point-in-time universe, delisting, corporate-action, borrow/locate,
+    vendor-revision, and independently signed exchange-calendar evidence
+  - independently measured spread, impact, queue, rejection, borrow, financing,
+    latency, and capacity distributions
+  - selected licensed venue/product definitions and authenticated native market-data,
+    order-entry, and drop-copy adapters with conformance/certification-environment evidence
+  - reviewed MAC/HSM integration, canonical codecs for every live-audit/proof/lifecycle fact,
+    exact unresolved-intent identity, replay-derived ticket state, cursor lease/burn or strict
+    no-use-until-CAS, pre-mutation emergency-open, crash-prefix terminalization/rotation,
+    durable bounded audit sink, owned full-runtime recovery, and an independent authenticated
+    latest-prefix CAS/monotonic/WORM anchor service
+  - externally controlled signing keys, immutable anchor receipts, database backups,
+    whole-state/evidence rollback controls, and WORM trial/result retention; the local
+    monotonic covariance anchor does not replace an independent signer or WORM archive
+  - prolonged shadow/paper and staged small-capital results reconciled to broker
+    statements across materially different regimes
+  - independent operational review, alerting, redundancy, disaster-recovery drills,
+    and legal/regulatory review

@@ -1,0 +1,44 @@
+[package]
+name = "quant-hft-core"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.97"
+license = "Proprietary"
+publish = false
+description = "Deterministic, fixed-capacity hot-path core for quantitative execution"
+
+[lib]
+name = "quant_hft_core"
+crate-type = ["rlib", "staticlib"]
+
+[[bin]]
+name = "hft-replay"
+path = "src/bin/replay.rs"
+test = false
+bench = false
+
+[[bin]]
+name = "latency_probe"
+path = "src/bin/latency_probe.rs"
+required-features = ["latency-probe-bin"]
+test = false
+bench = false
+
+[features]
+default = []
+allocation-audit = []
+latency-probe-bin = []
+
+[dependencies]
+
+[profile.release]
+codegen-units = 1
+lto = "fat"
+opt-level = 3
+overflow-checks = true
+panic = "abort"
+strip = "none"
+
+[profile.bench]
+inherits = "release"
+debug = true

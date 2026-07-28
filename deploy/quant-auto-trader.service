@@ -1,0 +1,55 @@
+[Unit]
+Description=Quant Auto Trader daemon
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=quantbot
+Group=quantbot
+WorkingDirectory=/opt/quant-auto-trading-bot
+EnvironmentFile=/opt/quant-auto-trading-bot/.env
+# Nonsecret signed-approval/evidence paths, registry pins, provider identities, and
+# bounded evidence policy live outside both the application tree and writable runtime.
+# Provision this file and every referenced artifact root:quantbot, mode 0640.
+EnvironmentFile=/opt/quant-auto-trader/deployment/governance.env
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONHASHSEED=0
+Environment=OPENBLAS_NUM_THREADS=1
+Environment=OMP_NUM_THREADS=1
+ExecStart=/opt/quant-auto-trading-bot/.venv/bin/python bot.py daemon
+Restart=always
+RestartSec=10
+TimeoutStopSec=900
+UMask=0077
+TasksMax=256
+MemoryMax=2G
+CPUQuota=200%
+LimitNOFILE=4096
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+ProtectProc=invisible
+ProcSubset=pid
+RemoveIPC=true
+RestrictNamespaces=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+LockPersonality=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+SystemCallArchitectures=native
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+ReadOnlyPaths=/opt/quant-auto-trader/deployment
+ReadWritePaths=/opt/quant-auto-trading-bot/runtime
+
+[Install]
+WantedBy=multi-user.target

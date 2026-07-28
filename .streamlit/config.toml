@@ -1,0 +1,9 @@
+[browser]
+gatherUsageStats = false
+
+[server]
+maxUploadSize = 200
+headless = true
+enableXsrfProtection = true
+enableCORS = true
+fileWatcherType = "none"
